@@ -19,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
-
+        // 로딩 후 로그인 액티비티로 이동
         Thread thread = new Thread() {
             public void run() {
                 try {
