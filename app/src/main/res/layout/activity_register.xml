@@ -61,7 +61,7 @@
                 android:textColorHint="#D3CFCF"
                 android:id="@+id/email_ET"
                 android:singleLine="true"
-                android:inputType="text"
+                android:inputType="textEmailAddress"
                 android:textColor="#ffffff"
                 android:layout_marginTop="20dp"
                 />
