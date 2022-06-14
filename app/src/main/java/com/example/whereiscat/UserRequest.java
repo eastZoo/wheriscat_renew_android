@@ -1,34 +1,16 @@
 package com.example.whereiscat;
 
 public class UserRequest {
-    private String username;
-    private String first_name;
-    private String last_name;
+    private String nickname;
     private String email;
-    private String date_joined = "2022-06-13T11:50:40.566z";
+    private String password;
 
-    public String getUsername() {
-        return username;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getEmail() {
@@ -39,11 +21,11 @@ public class UserRequest {
         this.email = email;
     }
 
-    public String getDate_joined() {
-        return date_joined;
+    public String getPassword() {
+        return password;
     }
 
-    public void setDate_joined(String date_joined) {
-        this.date_joined = date_joined;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,33 +16,33 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Button registerBtn;
-    private EditText username, firstname, lastname, email;
+    private EditText nickname, email, password ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        username = findViewById(R.id.username);
-        firstname = findViewById(R.id.firstname);
-        lastname = findViewById(R.id.lastname);
+        nickname = findViewById(R.id.nickname);
         email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+
         registerBtn = findViewById(R.id.registerBtn);
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                saveUser(createRequest());
             }
         });
     }
 
     public UserRequest createRequest(){
         UserRequest userRequest = new UserRequest();
-        userRequest.setUsername(username.getText().toString());
-        userRequest.setUsername(email.getText().toString());
-        userRequest.setUsername(lastname.getText().toString());
-        userRequest.setUsername(firstname.getText().toString());
+        userRequest.setNickname(nickname.getText().toString());
+        userRequest.setEmail(email.getText().toString());
+        userRequest.setPassword(password.getText().toString());
+
 
         return userRequest;
     }
@@ -51,15 +52,18 @@ public class MainActivity extends AppCompatActivity {
         Call<UserResponse> userResponseCall = ApiClient.getUserService().saveUser(userRequest);
         userResponseCall.enqueue(new Callback<UserResponse>() {
             @Override
-            public void onResponse(Call<UserRequest> call, Response<UserRequest> response) {
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
 
+                if (response.isSuccessful()) {
+                    Toast.makeText(MainActivity.this, "Save successfully", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Request failed", Toast.LENGTH_LONG).show();
+                }
             }
-
             @Override
-            public void onFailure(Call<UserRequest> call, Throwable t) {
-
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Request failed", Toast.LENGTH_LONG).show();
             }
         });
-        })
     }
 }

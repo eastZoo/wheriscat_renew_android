@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static Retrofit getRetrofit(){
         //서버 주소 중 바뀌지 않는 부분 = baseUrl
-        String baseUrl = "http://api.larntech.net/";
+        String baseUrl = "http://10.0.2.2:3000/api/todo/auth/";
 
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

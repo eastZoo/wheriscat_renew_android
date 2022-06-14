@@ -3,8 +3,8 @@ package com.example.whereiscat;
 public class UserResponse {
     private String id;
     private String username;
-    private String first_name;
-    private String last_name;
+    private String firstname;
+    private String lastname;
     private String email;
 
     public String getId() {
@@ -24,19 +24,19 @@ public class UserResponse {
     }
 
     public String getFirst_name() {
-        return first_name;
+        return firstname;
     }
 
     public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+        this.firstname = first_name;
     }
 
     public String getLast_name() {
-        return last_name;
+        return lastname;
     }
 
     public void setLast_name(String last_name) {
-        this.last_name = last_name;
+        this.lastname = last_name;
     }
 
     public String getEmail() {
