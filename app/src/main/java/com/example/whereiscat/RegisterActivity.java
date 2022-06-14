@@ -1,107 +1,51 @@
 package com.example.whereiscat;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.RetryPolicy;
-import com.android.volley.ServerError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.whereiscat.UtilsService.UtilService;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
-    private Button loginBtn, registerBtn;
-    private EditText nickname_ET, email_ET, password_ET;
-    ProgressBar progressBar;
 
-    private String nickname, email, password;
+    private static final String TAG = "MainActivity";
+    private Button registerBtn;
+    private EditText nickname, email, password;
+
+    private String nickname_sb, email_sb, password_sb;
+    ProgressBar progressBar;
     UtilService utilService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_main);
 
-        loginBtn = findViewById(R.id.loginBtn);
-        nickname_ET = findViewById(R.id.name_ET);
-        email_ET = findViewById(R.id.email_ET);
-        password_ET = findViewById(R.id.password_ET);
-        progressBar = findViewById(R.id.progress_bar);
+        nickname = findViewById(R.id.nickname);
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+
         registerBtn = findViewById(R.id.registerBtn);
 
         utilService = new UtilService();
-        loginBtn.setOnClickListener((view) -> {
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-        });
 
         registerBtn.setOnClickListener((view) -> {
             utilService.hideKeyboard(view, RegisterActivity.this);
-            nickname = nickname_ET.getText().toString();
-            email = email_ET.getText().toString();
-            password = password_ET.getText().toString();
-            Log.e(TAG, nickname);
-            Log.e(TAG, email);
-            Log.e(TAG, password);
+            nickname_sb = nickname.getText().toString();
+            email_sb = email.getText().toString();
+            password_sb = password.getText().toString();
             if(validate(view)){
-                registerUser(view);
-            }
-        });
-    }
-
-    private void registerUser(View view) {
-        progressBar.setVisibility(View.VISIBLE);
-
-        //암호화 하기 위해 해쉬맵에 담아서 사용
-        HashMap<String, Object> postingData = new HashMap<String, Object>();
-        postingData.put("nickname", nickname);
-        postingData.put("email", email);
-        postingData.put("password", password);
-
-        //클라이언트에 인스턴스를
-        Methods methods = Client.getRetrofitInstance().create(Methods.class);
-        methods.postData(postingData, "register").enqueue(new Callback<Model>() {
-            @Override
-            public void onResponse(Call<Model> call, Response<Model> response) {
-                if(response.isSuccessful()){
-                    Model model = response.body();
-                    Log.e(TAG, "POST" + "post 성공");
-                    Log.e(TAG, "POST" + model.getUser_token());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Model> call, Throwable t) {
-
+                saveUser(createRequest());
             }
         });
     }
@@ -109,9 +53,9 @@ public class RegisterActivity extends AppCompatActivity {
     public boolean validate(View view) {
         boolean isValid;
 
-        if(!TextUtils.isEmpty(nickname)) {
-            if(!TextUtils.isEmpty(email)) {
-                if(!TextUtils.isEmpty(password)) {
+        if(!TextUtils.isEmpty(nickname_sb)) {
+            if(!TextUtils.isEmpty(email_sb)) {
+                if(!TextUtils.isEmpty(password_sb)) {
                     isValid = true;
                 } else {
                     utilService.showSnackBar(view,"please enter password....");
@@ -127,5 +71,35 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         return  isValid;
+    }
+
+    public UserRequest createRequest(){
+        UserRequest userRequest = new UserRequest();
+        userRequest.setNickname(nickname.getText().toString());
+        userRequest.setEmail(email.getText().toString());
+        userRequest.setPassword(password.getText().toString());
+
+
+        return userRequest;
+    }
+
+    public void saveUser(UserRequest userRequest){
+
+        Call<UserResponse> userResponseCall = ApiClient.getUserService().saveUser(userRequest);
+        userResponseCall.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "Save successfully", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Request failed", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "Request failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
