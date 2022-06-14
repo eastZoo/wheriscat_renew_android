@@ -1,49 +1,31 @@
 package com.example.whereiscat;
 
 public class UserResponse {
-    private String id;
-    private String username;
-    private String firstname;
-    private String lastname;
-    private String email;
+    private String success;
+    private String token;
+    private String msg;
 
-    public String getId() {
-        return id;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public String getUsername() {
-        return username;
+    public String getSuccess() {
+        return success;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSuccess(String success) {
+        this.success = success;
     }
 
-    public String getFirst_name() {
-        return firstname;
+    public String getToken() {
+        return token;
     }
 
-    public void setFirst_name(String first_name) {
-        this.firstname = first_name;
-    }
-
-    public String getLast_name() {
-        return lastname;
-    }
-
-    public void setLast_name(String last_name) {
-        this.lastname = last_name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setToken(String token) {
+        this.token = token;
     }
 }
