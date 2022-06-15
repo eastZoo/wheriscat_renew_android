@@ -9,6 +9,14 @@
             android:id="@+id/action_home"
             />
         <item
+            android:title="TodoList"
+            android:id="@+id/action_todo"
+            />
+        <item
+            android:title="wherisCat"
+            android:id="@+id/action_cat"
+            />
+        <item
             android:title="Finished Task"
             android:id="@+id/action_finished_task"
             />

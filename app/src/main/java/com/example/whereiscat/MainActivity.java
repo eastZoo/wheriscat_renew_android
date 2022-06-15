@@ -139,6 +139,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.content, new HomeFragment()).commit();
                 break;
+            case R.id.action_todo:
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, new HomeFragment()).commit();
+                break;
+            case R.id.action_cat:
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, new HomeFragment()).commit();
+                break;
             case R.id.action_logout:
                 sharedPreferenceClass.clear();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
