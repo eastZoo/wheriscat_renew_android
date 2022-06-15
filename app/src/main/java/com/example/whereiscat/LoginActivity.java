@@ -1,17 +1,25 @@
 package com.example.whereiscat;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.CharacterPickerDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.whereiscat.UtilsService.UtilService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private Button registerBtn;
@@ -22,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressBar;
     UtilService utilService;
 
-    private String nickname_s, email_s, password_s;
+    private String email_s, password_s;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,15 +67,42 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+    public UserRequest createRequest(){
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail(email_ET.getText().toString());
+        userRequest.setPassword(password_ET.getText().toString());
+        return userRequest;
+    }
 
-    private void loginUser(View view) {
 
+    public void loginUser(UserRequest userRequest) {
+
+        Call<UserResponse> userResponseCall = ApiClient.getUserService().loginUser(userRequest);
+        userResponseCall.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.isSuccessful()) {
+                    UserResponse userResponse = response.body();
+
+                    String token = userResponse.getToken();
+                    Log.d(TAG, "token : " + userResponse.getToken());
+                    Toast.makeText(LoginActivity.this, token, Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class ));
+
+                } else {
+                    Toast.makeText(LoginActivity.this, "Request failed", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Request failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private boolean validate(View view) {
         boolean isValid;
 
-        if(!TextUtils.isEmpty(nickname_s)) {
             if(!TextUtils.isEmpty(email_s)) {
                 if(!TextUtils.isEmpty(password_s)) {
                     isValid = true;
@@ -79,11 +114,6 @@ public class LoginActivity extends AppCompatActivity {
                 utilService.showSnackBar(view,"please enter email....");
                 isValid = false;
             }
-        } else {
-            utilService.showSnackBar(view,"please enter name....");
-            isValid = false;
-        }
-
         return  isValid;
     }
 }

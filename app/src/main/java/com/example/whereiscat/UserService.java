@@ -8,4 +8,7 @@ public interface UserService {
 
     @POST("register/")
     Call<UserResponse> saveUser(@Body UserRequest userRequest);
+
+    @POST("login/")
+    Call<UserResponse> loginUser(@Body UserRequest userRequest);
 }
