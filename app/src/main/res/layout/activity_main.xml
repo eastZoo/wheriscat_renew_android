@@ -27,6 +27,39 @@
             android:layout_marginTop="10dp"
             />
 
+        <Button
+            android:id="@+id/whereisCatBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30sp"
+            android:background="@drawable/input_field"
+            android:text="어디있냥??"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30sp"
+            android:text="투두리스트"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:background="@drawable/input_field"
+            android:textColor="#ffffff"
+            android:id="@+id/todoListBtn"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30sp"
+            android:text="로그아웃"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:background="@drawable/input_field"
+            android:textColor="#ffffff"
+            android:id="@+id/logoutBtn"
+            />
+
 
     </LinearLayout>
 </ScrollView>

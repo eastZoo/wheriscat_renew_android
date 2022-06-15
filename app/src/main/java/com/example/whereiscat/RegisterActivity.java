@@ -3,6 +3,7 @@ package com.example.whereiscat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.whereiscat.UtilsService.SharedPreferenceClass;
 import com.example.whereiscat.UtilsService.UtilService;
 import com.squareup.picasso.Downloader;
 
@@ -29,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
     UtilService utilService;
+    SharedPreferenceClass sharedPreferenceClass;
 
     private String nickname_s, email_s, password_s;
     @Override
@@ -44,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn = findViewById(R.id.registerBtn);
 
         utilService = new UtilService();
+        sharedPreferenceClass = new SharedPreferenceClass(this);
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,9 +90,10 @@ public class RegisterActivity extends AppCompatActivity {
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful()) {
                     UserResponse userResponse = response.body();
-
                     String token = userResponse.getToken();
-                    Log.d(TAG, "token : " + userResponse.getToken());
+
+                    sharedPreferenceClass.setValue_string("token", token);
+                    Log.d(TAG, "token : " + token);
                     Toast.makeText(RegisterActivity.this, token, Toast.LENGTH_LONG).show();
                     startActivity(new Intent(RegisterActivity.this, MainActivity.class ));
 
@@ -124,5 +129,16 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         return  isValid;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences cat_pref = getSharedPreferences("user_cat", MODE_PRIVATE);
+        // 시작시 토큰 저장된 정보가지고 있으면 바로 로그인, 웹 세션 느낌
+        if(cat_pref.contains("token")) {
+            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+            finish();
+        }
     }
 }

@@ -4,7 +4,9 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.CharacterPickerDialog;
@@ -15,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.whereiscat.UtilsService.SharedPreferenceClass;
 import com.example.whereiscat.UtilsService.UtilService;
 
 import retrofit2.Call;
@@ -29,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
     UtilService utilService;
+    SharedPreferenceClass sharedPreferenceClass;
 
     private String email_s, password_s;
     @Override
@@ -44,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
 
         utilService = new UtilService();
         registerBtn = findViewById(R.id.registerBtn);
+
+        sharedPreferenceClass = new SharedPreferenceClass(this);
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,8 +89,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful()) {
                     UserResponse userResponse = response.body();
-
                     String token = userResponse.getToken();
+
+                    sharedPreferenceClass.setValue_string("token", token);
                     Log.d(TAG, "token : " + userResponse.getToken());
                     Toast.makeText(LoginActivity.this, token, Toast.LENGTH_LONG).show();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class ));
@@ -115,5 +122,18 @@ public class LoginActivity extends AppCompatActivity {
                 isValid = false;
             }
         return  isValid;
+    }
+
+    // SharedPreferences 쿠키 세션 역할!!!!
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SharedPreferences cat_pref = getSharedPreferences("user_cat", MODE_PRIVATE);
+        // 시작시 토큰 저장된 정보가지고 있으면 바로 로그인, 웹 세션 느낌
+        if(cat_pref.contains("token")) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        }
     }
 }
