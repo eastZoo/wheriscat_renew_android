@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        whereisCatBtn = findViewById(R.id.whereisCatBtn);
-        todoListBtn = findViewById(R.id.todoListBtn);
-        logoutBtn = findViewById(R.id.logoutBtn);
+//        whereisCatBtn = findViewById(R.id.whereisCatBtn);
+//        todoListBtn = findViewById(R.id.todoListBtn);
+//        logoutBtn = findViewById(R.id.logoutBtn);
         sharedPreferenceClass = new SharedPreferenceClass(this);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -62,34 +62,6 @@ public class MainActivity extends AppCompatActivity {
         initDrawer();
 
         getUserProfile();
-        
-        // 로그아웃 버튼
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sharedPreferenceClass.clear();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-            }
-        });
-
-        // 어디있냥 앱 실행 버튼
-        whereisCatBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, CatActivity.class));
-                finish();
-            }
-        });
-
-        // Todolist 앱 실행 버튼
-        todoListBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, TodoActivity.class));
-                finish();
-            }
-        });
 
     }
 
@@ -137,12 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.content, new FinishedTaskFragment()).commit();
                 break;
             case R.id.action_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.content, new HomeFragment()).commit();
-                break;
-            case R.id.action_todo:
-                getSupportFragmentManager().beginTransaction().replace(R.id.content, new HomeFragment()).commit();
-                break;
-            case R.id.action_cat:
                 getSupportFragmentManager().beginTransaction().replace(R.id.content, new HomeFragment()).commit();
                 break;
             case R.id.action_logout:
