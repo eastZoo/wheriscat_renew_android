@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,10 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
+import com.example.whereiscat.model.TodoModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +38,13 @@ public class HomeFragment extends Fragment {
     
     //저장된 토큰 담을 변수 선언
     String token;
-    
+
+    RecyclerView recyclerView;
+    TextView empty_tv;
+    ProgressBar progressBar;
+
+    // Todo cycler view에 전달하기위한 리스트 생성
+    ArrayList<TodoModel> arrayList;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -59,7 +72,26 @@ public class HomeFragment extends Fragment {
                 showAlertDialog();
             }
         });
+        
+        // 리싸이클러뷰 이용 투두 리스트 띄우기
+        recyclerView = view.findViewById(R.id.recycler_view);
+        empty_tv = view.findViewById(R.id.empty_tv);
+        progressBar = view.findViewById(R.id.progress_bar);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
+        
+        getTasks();
+        
         return view;
+    }
+
+    private void getTasks() {
+        arrayList = new ArrayList<>();
+        progressBar.setVisibility(View.VISIBLE);
+
+
+
     }
 
     private void showAlertDialog() {
