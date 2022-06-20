@@ -1,5 +1,7 @@
 package com.example.whereiscat;
 
+import com.example.whereiscat.UtilsService.SharedPreferenceClass;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static Retrofit getRetrofit(){
         //서버 주소 중 바뀌지 않는 부분 = baseUrl
-        String baseUrl = "http://10.0.2.2:3000/api/todo/auth/";
+        String baseUrl = "http://10.0.2.2:3000/api/";
 
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -47,5 +49,11 @@ public class ApiClient {
         UserService userService = getRetrofit().create(UserService.class);
 
         return userService;
+    }
+
+    public static TodoService getTodoService(){
+        TodoService todoService = getRetrofit().create(TodoService.class);
+
+        return todoService;
     }
 }
