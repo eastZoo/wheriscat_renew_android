@@ -4,7 +4,6 @@ import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,9 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.whereiscat.Adapters.TodoListAdapter;
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
 import com.example.whereiscat.model.TodoModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -38,6 +42,7 @@ public class HomeFragment extends Fragment {
     
     //저장된 토큰 담을 변수 선언
     String token;
+    TodoListAdapter todoListAdapter;
 
     RecyclerView recyclerView;
     TextView empty_tv;
@@ -45,6 +50,7 @@ public class HomeFragment extends Fragment {
 
     // Todo cycler view에 전달하기위한 리스트 생성
     ArrayList<TodoModel> arrayList;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -90,6 +96,44 @@ public class HomeFragment extends Fragment {
         arrayList = new ArrayList<>();
         progressBar.setVisibility(View.VISIBLE);
 
+        Call<JSONObject> todoResponseCall = ApiClient.getTodoService().getTasks(token = sharedPreferenceClass.getValue_string("token"));
+        todoResponseCall.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                try{
+                    if (response.isSuccessful()) {
+                        JSONArray jsonArray = response.body().getJSONArray("");
+                        Log.d(TAG, "todos : " + jsonArray );
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            Log.d(TAG, "temp : " + jsonObject);
+                            TodoModel todoModel = new TodoModel(
+                                    jsonObject.getString("_id"),
+                                    jsonObject.getString("title"),
+                                    jsonObject.getString("description")
+                            );
+                            arrayList.add(todoModel);
+                        }
+                        todoListAdapter = new TodoListAdapter(getActivity(), arrayList);
+                        recyclerView.setAdapter(todoListAdapter);
+                        Toast.makeText(getActivity(), "추가했습니다!!", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(getActivity(), "추가에 실패했습니다..", Toast.LENGTH_LONG).show();
+                    }
+                } catch ( JSONException e) {
+                    e.printStackTrace();
+                    progressBar.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                Toast.makeText(getActivity(), "실패했습니다..", Toast.LENGTH_LONG).show();
+            }
+        });
 
 
     }
@@ -138,6 +182,7 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<TodoResponse> call, Response<TodoResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getActivity(), "추가했습니다!!", Toast.LENGTH_SHORT).show();
+                    getTasks();
 
                 } else {
                     Toast.makeText(getActivity(), "추가에 실패했습니다..", Toast.LENGTH_LONG).show();

@@ -5,7 +5,6 @@
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="5dp"
     android:layout_margin="3dp"
-    app:cardBackgroundColor="@color/red"
     android:id="@+id/accordian_title"
     android:layout_height="wrap_content">
 
