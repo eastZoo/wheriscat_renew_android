@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.whereiscat.HomeFragment;
 import com.example.whereiscat.R;
 import com.example.whereiscat.model.TodoModel;
 
@@ -22,7 +23,7 @@ import java.util.Random;
 public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.MyViewHolder> {
     ArrayList<TodoModel> arrayList;
     Context context;
-    public TodoListAdapter(FragmentActivity activity, ArrayList<TodoModel> arrayList) {
+    public TodoListAdapter(Context context, ArrayList<TodoModel> arrayList ) {
         this.arrayList = arrayList;
         this.context = context;
     }

@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.example.whereiscat.Adapters.TodoListAdapter;
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
 import com.example.whereiscat.model.TodoModel;
@@ -31,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,46 +100,42 @@ public class HomeFragment extends Fragment {
         arrayList = new ArrayList<>();
         progressBar.setVisibility(View.VISIBLE);
 
-        Call<JSONObject> todoResponseCall = ApiClient.getTodoService().getTasks(token = sharedPreferenceClass.getValue_string("token"));
-        todoResponseCall.enqueue(new Callback<JSONObject>() {
+        Call<TodoResponse> todoResponseCall = ApiClient.getTodoService().getTasks(token = sharedPreferenceClass.getValue_string("token"));
+        todoResponseCall.enqueue(new Callback<TodoResponse>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
-                try{
-                    if (response.isSuccessful()) {
-                        JSONArray jsonArray = response.body().getJSONArray("");
-                        Log.d(TAG, "todos : " + jsonArray );
+            public void onResponse(Call<TodoResponse> call, Response<TodoResponse> response) {
+                if (response.isSuccessful()) {
+                    TodoResponse todoResponse = response.body();
+                    List<TodoModel> todos = todoResponse.getTodos();
+                    Log.d(TAG, "todos!!! : " + todos.get(0).getTitle());
 
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            Log.d(TAG, "temp : " + jsonObject);
-                            TodoModel todoModel = new TodoModel(
-                                    jsonObject.getString("_id"),
-                                    jsonObject.getString("title"),
-                                    jsonObject.getString("description")
-                            );
-                            arrayList.add(todoModel);
-                        }
-                        todoListAdapter = new TodoListAdapter(getActivity(), arrayList);
-                        recyclerView.setAdapter(todoListAdapter);
-                        Toast.makeText(getActivity(), "추가했습니다!!", Toast.LENGTH_SHORT).show();
+                    for( int i = 0 ; i < todos.size(); i++) {
 
-                    } else {
-                        Toast.makeText(getActivity(), "추가에 실패했습니다..", Toast.LENGTH_LONG).show();
+                        TodoModel todoModel = new TodoModel(
+                                todos.get(i).getId(),
+                                todos.get(i).getTitle(),
+                                todos.get(i).getDescription()
+                        );
+                        Log.d(TAG, "getId : " + todoModel.getId());
+                        Log.d(TAG, "getTitle : " + todoModel.getTitle());
+                        Log.d(TAG, "getDescription : " + todoModel.getDescription());
+                        arrayList.add(todoModel);
                     }
-                } catch ( JSONException e) {
-                    e.printStackTrace();
+
+                    todoListAdapter = new TodoListAdapter(getActivity(), arrayList );
+                    recyclerView.setAdapter(todoListAdapter);
+
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
                     progressBar.setVisibility(View.GONE);
                 }
-
             }
-
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable t) {
-                Toast.makeText(getActivity(), "실패했습니다..", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<TodoResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
             }
         });
-
-
     }
 
     private void showAlertDialog() {

@@ -90,9 +90,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     UserResponse userResponse = response.body();
                     String token = userResponse.getToken();
-
+                    Log.d(TAG, "token!!! : " + userResponse);
                     sharedPreferenceClass.setValue_string("token", token);
-                    Log.d(TAG, "token : " + userResponse.getToken());
+                    Log.d(TAG, "token!!! : " + userResponse.getToken());
                     Toast.makeText(LoginActivity.this, token, Toast.LENGTH_LONG).show();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class ));
 

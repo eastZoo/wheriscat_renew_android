@@ -1,43 +1,37 @@
 package com.example.whereiscat;
 
+import com.example.whereiscat.model.TodoModel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoResponse {
 
-    private ArrayList todos;
-    private String id;
-    private String title;
-    private String description;
+    private String suuccess;
+    private int count;
+    private List<TodoModel> todos;
 
-    public ArrayList getTodos() {
-        return todos;
+    public String getSuuccess() {
+        return suuccess;
     }
 
-    public void setTodos(ArrayList todos) {
+    public void setSuuccess(String suuccess) {
+        this.suuccess = suuccess;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public void setTodos(List<TodoModel> todos) {
         this.todos = todos;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public List<TodoModel> getTodos() {
+        return todos;
     }
 }
