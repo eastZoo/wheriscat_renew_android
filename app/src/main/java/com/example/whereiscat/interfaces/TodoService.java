@@ -1,4 +1,4 @@
-package com.example.whereiscat;
+package com.example.whereiscat.interfaces;
 
 import com.example.whereiscat.model.TodoRequest;
 import com.example.whereiscat.model.TodoResponse;

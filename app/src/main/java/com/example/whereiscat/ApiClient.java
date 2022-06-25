@@ -1,6 +1,7 @@
 package com.example.whereiscat;
 
-import com.example.whereiscat.UtilsService.SharedPreferenceClass;
+import com.example.whereiscat.interfaces.TodoService;
+import com.example.whereiscat.interfaces.UserService;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

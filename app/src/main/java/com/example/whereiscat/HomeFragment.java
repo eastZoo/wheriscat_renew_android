@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.whereiscat.Adapters.TodoListAdapter;
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
+import com.example.whereiscat.interfaces.RecyclerViewClickListener;
 import com.example.whereiscat.model.TodoModel;
 import com.example.whereiscat.model.TodoRequest;
 import com.example.whereiscat.model.TodoResponse;
@@ -35,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements RecyclerViewClickListener {
     FloatingActionButton floatingActionButton;
     SharedPreferenceClass sharedPreferenceClass;
     
@@ -119,7 +120,7 @@ public class HomeFragment extends Fragment {
                         arrayList.add(todoModel);
                     }
 
-                    todoListAdapter = new TodoListAdapter(getActivity(), arrayList );
+                    todoListAdapter = new TodoListAdapter(getActivity(), arrayList, HomeFragment.this );
                     recyclerView.setAdapter(todoListAdapter);
 
                     progressBar.setVisibility(View.GONE);
@@ -135,13 +136,14 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void showAlertDialog() {
+    public void showAlertDialog() {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.custom_dialog_layout, null);
 
         final EditText title_field = alertLayout.findViewById(R.id.title);
         final EditText description_field = alertLayout.findViewById(R.id.description);
-
+        
+        // 하단 오른쪽 투두추가버튼 클릭 시 버튼 설정
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(alertLayout)
                 .setTitle("Add Task")
@@ -171,6 +173,44 @@ public class HomeFragment extends Fragment {
 
         dialog.show();
     }
+    public void showUpdateDialog(final  String  id, String title, String description) {
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.custom_dialog_layout, null);
+
+        final EditText title_field = alertLayout.findViewById(R.id.title);
+        final EditText description_field = alertLayout.findViewById(R.id.description);
+
+        title_field.setText(title);
+        description_field.setText(description);
+
+        // 투두 편집 버튼 팝업창 버튼 설정
+        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setView(alertLayout)
+                .setTitle("Update Task")
+                .setPositiveButton("Update", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = ((AlertDialog)alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String title = title_field.getText().toString();
+                        String description = description_field.getText().toString();
+
+                        Toast.makeText(getActivity(), title + " " + description, Toast.LENGTH_SHORT).show();
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        alertDialog.show();
+    }
+
     // header에 token 담아서 인증하고 , todo 저장하기 성공,,!!
     private void saveTodo(TodoRequest todoRequest) {
         Call<TodoResponse> todoResponseCall = ApiClient.getTodoService().saveTodo(todoRequest, token = sharedPreferenceClass.getValue_string("token"));
@@ -199,5 +239,31 @@ public class HomeFragment extends Fragment {
         todoRequest.setDescription(description);
         Log.d(TAG, "title, description : " + todoRequest);
         return todoRequest;
+    }
+
+    // implements RecyclerViewClickListener controller
+    @Override
+    public void onItemClick(int position) {
+        Toast.makeText(getActivity(), "Position "+ position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLongItemClick(int position) {
+        Toast.makeText(getActivity(), "Position "+ position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onEditButtonClick(int position) {
+        showUpdateDialog(arrayList.get(position).getId(), arrayList.get(position).getTitle(), arrayList.get(position).getDescription());
+    }
+
+    @Override
+    public void onDeleteButtonClick(int position) {
+        Toast.makeText(getActivity(), "Position "+ position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDoneButtonClick(int position) {
+        Toast.makeText(getActivity(), "Position "+ position, Toast.LENGTH_SHORT).show();
     }
 }

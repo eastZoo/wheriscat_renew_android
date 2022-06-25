@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.whereiscat.HomeFragment;
 import com.example.whereiscat.R;
+import com.example.whereiscat.interfaces.RecyclerViewClickListener;
 import com.example.whereiscat.model.TodoModel;
 
 import java.util.ArrayList;
@@ -23,9 +24,12 @@ import java.util.Random;
 public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.MyViewHolder> {
     ArrayList<TodoModel> arrayList;
     Context context;
-    public TodoListAdapter(Context context, ArrayList<TodoModel> arrayList ) {
+    final private RecyclerViewClickListener clickListener;
+
+    public TodoListAdapter(Context context, ArrayList<TodoModel> arrayList,  RecyclerViewClickListener clickListener) {
         this.arrayList = arrayList;
         this.context = context;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -89,6 +93,42 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.MyView
             editBtn = (ImageView) itemView.findViewById(R.id.editBtn);
             deleteBtn = (ImageView) itemView.findViewById(R.id.deleteBtn);
             doneBtn = (ImageView) itemView.findViewById(R.id.doneBtn);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onItemClick(getAdapterPosition());
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    clickListener.onLongItemClick(getAdapterPosition());
+                    return true;
+                }
+            });
+
+            editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onEditButtonClick(getAdapterPosition());
+                }
+            });
+
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onDeleteButtonClick(getAdapterPosition());
+                }
+            });
+
+            doneBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onDoneButtonClick(getAdapterPosition());
+                }
+            });
 
         }
     }
