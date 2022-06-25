@@ -1,8 +1,7 @@
 package com.example.whereiscat;
 
-import org.json.JSONObject;
-
-import java.util.List;
+import com.example.whereiscat.model.TodoRequest;
+import com.example.whereiscat.model.TodoResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

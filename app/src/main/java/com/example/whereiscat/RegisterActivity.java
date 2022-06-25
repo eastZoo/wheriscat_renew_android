@@ -15,9 +15,8 @@ import android.widget.Toast;
 
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
 import com.example.whereiscat.UtilsService.UtilService;
-import com.squareup.picasso.Downloader;
-
-import org.json.JSONException;
+import com.example.whereiscat.model.UserRequest;
+import com.example.whereiscat.model.UserResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;

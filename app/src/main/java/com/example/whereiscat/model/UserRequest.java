@@ -1,4 +1,4 @@
-package com.example.whereiscat;
+package com.example.whereiscat.model;
 
 public class UserRequest {
     private String nickname;

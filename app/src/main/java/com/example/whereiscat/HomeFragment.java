@@ -4,7 +4,6 @@ import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,18 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
 import com.example.whereiscat.Adapters.TodoListAdapter;
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
 import com.example.whereiscat.model.TodoModel;
+import com.example.whereiscat.model.TodoRequest;
+import com.example.whereiscat.model.TodoResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -91,6 +86,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         
+        // 새로운 투두 추가될때 다시 로드
         getTasks();
         
         return view;
@@ -109,6 +105,7 @@ public class HomeFragment extends Fragment {
                     List<TodoModel> todos = todoResponse.getTodos();
                     Log.d(TAG, "todos!!! : " + todos.get(0).getTitle());
 
+                    // 서버로부터 응답받은 todos에서 하나씩 빼서 TodoModel에 저장 객체 리스트에저장 어댑터로 전송!!
                     for( int i = 0 ; i < todos.size(); i++) {
 
                         TodoModel todoModel = new TodoModel(

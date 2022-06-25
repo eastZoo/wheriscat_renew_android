@@ -1,4 +1,4 @@
-package com.example.whereiscat;
+package com.example.whereiscat.model;
 
 import com.example.whereiscat.model.TodoModel;
 

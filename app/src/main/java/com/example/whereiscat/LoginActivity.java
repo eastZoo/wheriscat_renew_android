@@ -4,12 +4,10 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.method.CharacterPickerDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
 import com.example.whereiscat.UtilsService.UtilService;
+import com.example.whereiscat.model.UserRequest;
+import com.example.whereiscat.model.UserResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;

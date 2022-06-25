@@ -40,6 +40,19 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.MyView
         int randomdColors = androidColors[new Random().nextInt(androidColors.length)];
 
         myViewHolder.accordian_title.setCardBackgroundColor(randomdColors);
+
+        // Homefragment에서 down arrow 클릭 리스너 동작
+        myViewHolder.arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(myViewHolder.accordian_body.getVisibility() == View.VISIBLE) {
+                    myViewHolder.accordian_body.setVisibility(View.GONE);
+                } else {
+                    myViewHolder.accordian_body.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         return myViewHolder;
     }
 
