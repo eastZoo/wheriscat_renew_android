@@ -11,11 +11,11 @@ public class TodoResponse {
     private int count;
     private List<TodoModel> todos;
 
-    public String getSuuccess() {
+    public String getSuccess() {
         return suuccess;
     }
 
-    public void setSuuccess(String suuccess) {
+    public void setSuccess(String suuccess) {
         this.suuccess = suuccess;
     }
 

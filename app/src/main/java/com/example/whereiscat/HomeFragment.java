@@ -30,6 +30,7 @@ import com.example.whereiscat.model.TodoResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -201,7 +202,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                         String title = title_field.getText().toString();
                         String description = description_field.getText().toString();
 
-                        Toast.makeText(getActivity(), title + " " + description, Toast.LENGTH_SHORT).show();
+                        updateTask(id, title, description);
                         alertDialog.dismiss();
                     }
                 });
@@ -209,6 +210,31 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
         });
 
         alertDialog.show();
+    }
+
+    // Update Todo Task Method
+    private void updateTask(String id, String title, String description) {
+        HashMap<String, String> body = new HashMap<>();
+        body.put("title", title);
+        body.put("description", description);
+
+        Call<TodoResponse> todoResponseCall = ApiClient.getTodoService().updateTask(id, body);
+        todoResponseCall.enqueue(new Callback<TodoResponse>() {
+            @Override
+            public void onResponse(Call<TodoResponse> call, Response<TodoResponse> response) {
+                if (response.isSuccessful()) {
+                    getTasks();
+                } else {
+                    Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onFailure(Call<TodoResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     // header에 token 담아서 인증하고 , todo 저장하기 성공,,!!
