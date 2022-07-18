@@ -147,9 +147,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
         // 하단 오른쪽 투두추가버튼 클릭 시 버튼 설정
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(alertLayout)
-                .setTitle("Add Task")
-                .setPositiveButton("Add", null)
-                .setNegativeButton("Cancel", null)
+                .setTitle("투두 추가하기")
+                .setPositiveButton("추가", null)
+                .setNegativeButton("취소", null)
                 .create();
 
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -187,9 +187,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
         // 투두 편집 버튼 팝업창 버튼 설정
         final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setView(alertLayout)
-                .setTitle("Update Task")
-                .setPositiveButton("Update", null)
-                .setNegativeButton("Cancel", null)
+                .setTitle("투두 수정하기")
+                .setPositiveButton("수정", null)
+                .setNegativeButton("취소", null)
                 .create();
 
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -203,6 +203,34 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                         String description = description_field.getText().toString();
 
                         updateTask(id, title, description);
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        alertDialog.show();
+    }
+    public void showDeleteDialog(final String id, final  int position) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("진짜 삭제하실 거에요?!!")
+                .setPositiveButton("삭제", null)
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getTasks();
+                    }
+                })
+                .create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = ((AlertDialog)alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteTodo(id, position);
                         alertDialog.dismiss();
                     }
                 });
@@ -235,6 +263,31 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
             }
         });
 
+    }
+
+
+    private void deleteTodo(final String id, final int position) {
+
+        Call<TodoResponse> todoResponseCall = ApiClient.getTodoService().deleteTask(id);
+        todoResponseCall.enqueue(new Callback<TodoResponse>() {
+            @Override
+            public void onResponse(Call<TodoResponse> call, Response<TodoResponse> response) {
+                if (response.isSuccessful()) {
+                    arrayList.remove(position);
+                    todoListAdapter.notifyItemRemoved(position);
+//                    response 메세지 받아서 서버로부터 받은 msg 출력하기 추가 해보기!!
+//                    Toast.makeText(getActivity(), response.getString("msg"), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onFailure(Call<TodoResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     // header에 token 담아서 인증하고 , todo 저장하기 성공,,!!
@@ -285,7 +338,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
 
     @Override
     public void onDeleteButtonClick(int position) {
-        Toast.makeText(getActivity(), "Position "+ position, Toast.LENGTH_SHORT).show();
+        showDeleteDialog(arrayList.get(position).getId(), position);
     }
 
     @Override

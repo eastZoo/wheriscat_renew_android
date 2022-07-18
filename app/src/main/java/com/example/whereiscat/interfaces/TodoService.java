@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -24,4 +25,7 @@ public interface TodoService {
 
     @PUT("todo/{id}")
     Call<TodoResponse> updateTask(@Path("id") String id, @Body HashMap body);
+
+    @DELETE("todo/{id}")
+    Call<TodoResponse> deleteTask(@Path("id") String id );
 }
