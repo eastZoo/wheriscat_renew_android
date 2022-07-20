@@ -1,5 +1,7 @@
 package com.example.whereiscat;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -12,16 +14,26 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.whereiscat.Adapters.TodoListAdapter;
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
+import com.example.whereiscat.model.TodoModel;
+import com.example.whereiscat.model.TodoResponse;
+import com.example.whereiscat.model.UserModel;
+import com.example.whereiscat.model.UserResponse;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,7 +46,11 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private NavigationView navigationView;
-    
+    private TextView user_name, user_email;
+    private CircleImageView userImage;
+
+    //저장된 토큰 담을 변수 선언
+    String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +65,13 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
+
+        // 프로필 로그인 유저 네임 띄우기
+        View hdView = navigationView.getHeaderView(0);
+        user_name = (TextView) hdView.findViewById(R.id.username);
+        user_email = (TextView) hdView.findViewById(R.id.user_email);
+        userImage = (CircleImageView) hdView.findViewById(R.id.avatar);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -66,6 +88,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getUserProfile() {
+        Call<UserResponse> userResponseCall = ApiClient.getUserService().getProfile(token = sharedPreferenceClass.getValue_string("token"));
+        userResponseCall.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.isSuccessful()) {
+                    UserResponse userResponse = response.body();
+                    List<UserModel> user = userResponse.getUser();
+                    Log.e(TAG, "Profile!!! : " + response.body().getUser());
+
+                } else {
+                    Toast.makeText(MainActivity.this, "Request failed", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "GetProfile Failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void initDrawer() {
