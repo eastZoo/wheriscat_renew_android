@@ -23,6 +23,9 @@ public interface TodoService {
     @GET("todo/")
     Call<TodoResponse> getTasks(@Header("Authorization") String token);
 
+    @GET("todo/finished")
+    Call<TodoResponse> getFinishTasks(@Header("Authorization") String token);
+
     @PUT("todo/{id}")
     Call<TodoResponse> updateTask(@Path("id") String id, @Body HashMap body);
 
@@ -31,4 +34,6 @@ public interface TodoService {
 
     @DELETE("todo/{id}")
     Call<TodoResponse> deleteTask(@Path("id") String id );
+
+
 }
