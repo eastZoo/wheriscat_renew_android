@@ -26,6 +26,9 @@ public interface TodoService {
     @PUT("todo/{id}")
     Call<TodoResponse> updateTask(@Path("id") String id, @Body HashMap body);
 
+    @PUT("todo/{id}")
+    Call<TodoResponse> updateFinish(@Path("id") String id, @Body HashMap body);
+
     @DELETE("todo/{id}")
     Call<TodoResponse> deleteTask(@Path("id") String id );
 }

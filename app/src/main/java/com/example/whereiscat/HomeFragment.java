@@ -174,6 +174,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
 
         dialog.show();
     }
+
     public void showUpdateDialog(final  String  id, String title, String description) {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.custom_dialog_layout, null);
@@ -211,6 +212,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
 
         alertDialog.show();
     }
+
     public void showDeleteDialog(final String id, final  int position) {
         final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle("진짜 삭제하실 거에요?!!")
@@ -231,6 +233,30 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                     @Override
                     public void onClick(View v) {
                         deleteTodo(id, position);
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    public void showFinishedTaskDialog(final String id, final int position) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("완료한 투두리스트로 이동할까요??")
+                .setPositiveButton("이동", null)
+                .setNegativeButton("아니요", null)
+                .create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = ((AlertDialog)alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        updateToFinishTodo(id, position);
                         alertDialog.dismiss();
                     }
                 });
@@ -265,9 +291,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
 
     }
 
-
     private void deleteTodo(final String id, final int position) {
-
         Call<TodoResponse> todoResponseCall = ApiClient.getTodoService().deleteTask(id);
         todoResponseCall.enqueue(new Callback<TodoResponse>() {
             @Override
@@ -289,7 +313,31 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
             }
         });
     }
+    //현재
+    private void updateToFinishTodo(String id, final int position) {
+        HashMap<String, String> body = new HashMap<>();
+        body.put("finished", "true" );
 
+        Call<TodoResponse> todoResponseCall = ApiClient.getTodoService().updateFinish(id, body);
+        todoResponseCall.enqueue(new Callback<TodoResponse>() {
+            @Override
+            public void onResponse(Call<TodoResponse> call, Response<TodoResponse> response) {
+                if (response.isSuccessful()) {
+                    arrayList.remove(position);
+                    getTasks();
+                    todoListAdapter.notifyItemRemoved(position);
+                    Toast.makeText(getActivity(), "완료하셨습니다!!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onFailure(Call<TodoResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     // header에 token 담아서 인증하고 , todo 저장하기 성공,,!!
     private void saveTodo(TodoRequest todoRequest) {
         Call<TodoResponse> todoResponseCall = ApiClient.getTodoService().saveTodo(todoRequest, token = sharedPreferenceClass.getValue_string("token"));
@@ -311,6 +359,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
             }
         });
     }
+
+
+
 
     private TodoRequest createRequest(String title, String description) {
         TodoRequest todoRequest = new TodoRequest();
@@ -343,6 +394,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
 
     @Override
     public void onDoneButtonClick(int position) {
+        showFinishedTaskDialog(arrayList.get(position).getId(), position);
         Toast.makeText(getActivity(), "Position "+ position, Toast.LENGTH_SHORT).show();
     }
 }
