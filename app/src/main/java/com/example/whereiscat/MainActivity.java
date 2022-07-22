@@ -104,14 +104,11 @@ public class MainActivity extends AppCompatActivity {
                 ProfileResponse profileResponse = response.body();
                 UserModel profile  = profileResponse.getUserModel();
                 // jsonObject 불러올때 UserModel 처럼 구조 짜기
-//                String nickname = String.valueOf(profile.get("nickname"));
-//                String email = String.valueOf(profile.get("email"));
-//                String avatar = String.valueOf(profile.get("avatar"));
-//                Log.d(TAG, "profile!!!! : " + profile.get("nickname"));
-//                Log.d(TAG, "profile!!!! : " + profile.get("email"));
-//                Log.d(TAG, "profile!!!! : " + profile.get("avatar"));
-//                Log.d(TAG, "toString!!! : " + profileResponse.getUser().toString());
-//                Log.d(TAG, "Log!!!! : " + profileResponse.getNickname());
+
+                Log.d(TAG, "getNickname!!!! : " + profile.getNickname());
+                Log.d(TAG, "getEmail!!!! : " + profile.getEmail());
+                Log.d(TAG, "getAvatar!!!! : " + profile.getAvatar());
+
                 user_nickname.setText(profile.getNickname());
                 user_email.setText(profile.getEmail());
 
@@ -184,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-    // navigationbar 화면전환 세팅
+    // 왼쪽 navigationbar 화면전환 세팅
     private void setDrawerClick(int itemId) {
         switch (itemId) {
             case R.id.action_finished_task:
@@ -198,6 +195,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
                 break;
+            case R.id.action_cat:
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, new CatFragment()).commit();
+
         }
     }
 
@@ -209,6 +209,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+
+                String shareBody = "이앱을 친구들과 공유해봐요!!";
+
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share Via"));
+
+                return true;
+
+            case R.id.refresh_menu:
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, new HomeFragment()).commit();
+                return true;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 }
