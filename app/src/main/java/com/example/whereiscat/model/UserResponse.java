@@ -6,7 +6,6 @@ public class UserResponse {
     private String success;
     private String token;
     private String msg;
-    private List<UserModel> user;
 
     public String getSuccess() {
         return success;
@@ -30,13 +29,5 @@ public class UserResponse {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public List<UserModel> getUser() {
-        return user;
-    }
-
-    public void setUser(List<UserModel> user) {
-        this.user = user;
     }
 }

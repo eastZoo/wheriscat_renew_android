@@ -25,11 +25,16 @@ import android.widget.Toast;
 
 import com.example.whereiscat.Adapters.TodoListAdapter;
 import com.example.whereiscat.UtilsService.SharedPreferenceClass;
+import com.example.whereiscat.model.ProfileResponse;
 import com.example.whereiscat.model.TodoModel;
 import com.example.whereiscat.model.TodoResponse;
 import com.example.whereiscat.model.UserModel;
 import com.example.whereiscat.model.UserResponse;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -46,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private NavigationView navigationView;
-    private TextView user_name, user_email;
+    private TextView user_nickname, user_email;
     private CircleImageView userImage;
 
     //저장된 토큰 담을 변수 선언
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 프로필 로그인 유저 네임 띄우기
         View hdView = navigationView.getHeaderView(0);
-        user_name = (TextView) hdView.findViewById(R.id.username);
+        user_nickname = (TextView) hdView.findViewById(R.id.user_nickname);
         user_email = (TextView) hdView.findViewById(R.id.user_email);
         userImage = (CircleImageView) hdView.findViewById(R.id.avatar);
 
@@ -88,25 +93,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getUserProfile() {
-        Call<UserResponse> userResponseCall = ApiClient.getUserService().getProfile(token = sharedPreferenceClass.getValue_string("token"));
-        userResponseCall.enqueue(new Callback<UserResponse>() {
+        JsonObject profile = new JsonObject();
+        Call<ProfileResponse> profileResponseCall = ApiClient.getUserService().getProfile(token = sharedPreferenceClass.getValue_string("token"));
+        profileResponseCall.enqueue(new Callback<ProfileResponse>() {
+            
+            // ProfileResponse 에서 받을 객체인 user : {}이 jsonObject이기 때문에 변수형 jsonObject로 선언
+            // 이후 response.body()와서 JsonObject한번더 저장 후 .get()으로 원하는 값 key 적어줌
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.isSuccessful()) {
-                    UserResponse userResponse = response.body();
-                    List<UserModel> user = userResponse.getUser();
-                    Log.e(TAG, "Profile!!! : " + response.body().getUser());
+            public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                ProfileResponse profileResponse = response.body();
+                UserModel profile  = profileResponse.getUserModel();
+                // jsonObject 불러올때 UserModel 처럼 구조 짜기
+//                String nickname = String.valueOf(profile.get("nickname"));
+//                String email = String.valueOf(profile.get("email"));
+//                String avatar = String.valueOf(profile.get("avatar"));
+//                Log.d(TAG, "profile!!!! : " + profile.get("nickname"));
+//                Log.d(TAG, "profile!!!! : " + profile.get("email"));
+//                Log.d(TAG, "profile!!!! : " + profile.get("avatar"));
+//                Log.d(TAG, "toString!!! : " + profileResponse.getUser().toString());
+//                Log.d(TAG, "Log!!!! : " + profileResponse.getNickname());
+                user_nickname.setText(profile.getNickname());
+                user_email.setText(profile.getEmail());
 
-                } else {
-                    Toast.makeText(MainActivity.this, "Request failed", Toast.LENGTH_LONG).show();
-                }
+                Picasso.with(getApplicationContext())
+                        .load(profile.getAvatar())
+                        .placeholder(R.drawable.ic_account)
+                        .error(R.drawable.ic_account)
+                        .into(userImage);
+
             }
+
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "GetProfile Failed", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<ProfileResponse> call, Throwable t) {
+//                Log.d(TAG, "에러이유 : " + t);
+                Toast.makeText(MainActivity.this, "Request failed"+ t , Toast.LENGTH_LONG).show();
             }
         });
     }
+//    private void getUserProfile() {
+//        Call<UserResponse> userResponseCall = ApiClient.getUserService().getProfile(token=sharedPreferenceClass.getValue_string("token"));
+//        userResponseCall.enqueue(new Callback<UserResponse>() {
+//            @Override
+//            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+//                if(response.isSuccessful()) {
+//                    Toast.makeText( MainActivity.this , "Hello DONGZOO", Toast.LENGTH_LONG).show();
+//                } else {
+//                    Toast.makeText( MainActivity.this , "Fuck!!", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UserResponse> call, Throwable t) {
+//                Toast.makeText(MainActivity.this, "Request failed", Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
+
 
     private void initDrawer() {
         FragmentManager manager = getSupportFragmentManager();

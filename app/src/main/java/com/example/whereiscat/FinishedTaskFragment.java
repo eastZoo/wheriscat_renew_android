@@ -98,7 +98,6 @@ public class FinishedTaskFragment extends Fragment implements RecyclerViewClickL
                 if (response.isSuccessful()) {
                     TodoResponse todoResponse = response.body();
                     List<TodoModel> todos = todoResponse.getTodos();
-                    Log.d(TAG, "todos!!! : " + todos.get(0).getTitle());
 
                     // 서버로부터 응답받은 todos에서 하나씩 빼서 TodoModel에 저장 객체 리스트에저장 어댑터로 전송!!
                     for (int i = 0; i < todos.size(); i++) {

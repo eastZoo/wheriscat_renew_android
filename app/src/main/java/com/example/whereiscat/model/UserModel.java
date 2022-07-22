@@ -3,6 +3,12 @@ package com.example.whereiscat.model;
 public class UserModel {
     private String email,avatar,nickname;
 
+    public UserModel(String email, String avatar, String nickname) {
+        this.email = email;
+        this.avatar = avatar;
+        this.nickname = nickname;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -27,9 +33,4 @@ public class UserModel {
         this.nickname = nickname;
     }
 
-    public UserModel(String email, String avatar, String nickname) {
-        this.email = email;
-        this.avatar = avatar;
-        this.nickname = nickname;
-    }
 }
